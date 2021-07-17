@@ -61,4 +61,17 @@ describe("Promise", () => {
     })
     promise.then(true, null)
   })
+  it('2.2.2', () => {
+    let onFulfilled = sinon.fake()
+    const promise = new Promise((resolve) => {
+      assert.isFalse(onFulfilled.called)
+      resolve(123)
+      setTimeout(() => {
+        assert(promise.state === 'fulfilled')
+        assert.isTrue(onFulfilled.called)
+        assert(onFulfilled.calledWith(123))
+      })
+    })
+    promise.then(onFulfilled)
+  })
 })
