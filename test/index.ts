@@ -55,4 +55,10 @@ describe("Promise", () => {
     // @ts-ignore
     promise.then(onFulfilled)
   })
+  it('2.2.1', () => {
+    const promise = new Promise((resolve) => {
+      resolve()
+    })
+    promise.then(true, null)
+  })
 })

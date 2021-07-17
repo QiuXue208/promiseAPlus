@@ -1,14 +1,21 @@
+import { type } from "os"
+
 class Promise2 {
   onFulfilled = null
   onRejected = null
+  state = 'pending'
   resolve() {
     setTimeout(() => {
-      this.onFulfilled()
+      if (typeof this.onFulfilled === 'function') {
+        this.onFulfilled()
+      }
     }, 0)
   }
   reject() {
     setTimeout(() => {
-      this.onRejected()
+      if (typeof this.onRejected === 'function') {
+        this.onRejected()
+      }
     }, 0)
   }
   constructor(fn) {
@@ -17,9 +24,13 @@ class Promise2 {
     }
     fn(this.resolve.bind(this), this.reject.bind(this))
   }
-  then(onFulfilled, onRejected) {
-    this.onFulfilled = onFulfilled
-    this.onRejected = onRejected
+  then(onFulfilled?, onRejected?) {
+    if (typeof onFulfilled === 'function') {
+      this.onFulfilled = onFulfilled
+    }
+    if (typeof onRejected === 'function') {
+      this.onRejected = onRejected
+    }
   }
 }
 
