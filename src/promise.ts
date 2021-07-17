@@ -5,6 +5,7 @@ class Promise2 {
   onRejected = null
   state = 'pending'
   resolve(result) {
+    if (this.state !== 'pending') return
     this.state = 'fulfilled'
     setTimeout(() => {
       if (typeof this.onFulfilled === 'function') {
@@ -13,6 +14,7 @@ class Promise2 {
     }, 0)
   }
   reject(reason) {
+    if (this.state !== 'pending') return
     this.state = 'rejected'
     setTimeout(() => {
       if (typeof this.onRejected === 'function') {
