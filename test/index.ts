@@ -61,7 +61,7 @@ describe("Promise", () => {
     })
     promise.then(true, null)
   })
-  it('2.2.2', () => {
+  it('2.2.2', (done) => {
     let onFulfilled = sinon.fake()
     const promise = new Promise((resolve) => {
       assert.isFalse(onFulfilled.called)
@@ -72,11 +72,12 @@ describe("Promise", () => {
         assert.isTrue(onFulfilled.called)
         assert.isTrue(onFulfilled.calledOnce)
         assert(onFulfilled.calledWith(123))
+        done()
       })
     })
     promise.then(onFulfilled)
   })
-  it('2.2.3', () => {
+  it('2.2.3', (done) => {
     let onRejected = sinon.fake()
     const promise = new Promise((resolve, reject) => {
       assert.isFalse(onRejected.called)
@@ -87,8 +88,22 @@ describe("Promise", () => {
         assert.isTrue(onRejected.called)
         assert.isTrue(onRejected.calledOnce)
         assert(onRejected.calledWith(123))
+        done()
       })
     })
     promise.then(null, onRejected)
+  })
+  it('2.2.4-在我的代码执行完成前，不得调用then后面的俩函数', (done) => {
+    let onFulfilled = sinon.fake()
+    const promise = new Promise((resolve) => {
+        resolve()
+    })
+    promise.then(onFulfilled)
+    console.log(1)
+    assert.isFalse(onFulfilled.called)
+    setTimeout(() => {
+      assert.isTrue(onFulfilled.called)
+      done()
+    })
   })
 })
