@@ -1,6 +1,9 @@
 import * as chai from 'chai';
-import { type } from 'os';
+import * as sinon from 'sinon'
+import * as sinonChai from 'sinon-chai'
 import Promise from '../src/promise';
+
+chai.use(sinonChai)
 const assert = chai.assert;
 
 // mocha模块才有describe和it这两个方法
@@ -24,34 +27,32 @@ describe("Promise", () => {
     assert.isFunction(promise.then)
   })
   it('new Promise(fn)中的fn会立即执行', () => {
-    let called = false 
-    const promise = new Promise(() => {
-      called = true
-    })
-    // @ts-ignore
-    assert(called === true)
+    // sinon提供一个假的函数
+    let fn = sinon.fake()
+    const promise = new Promise(fn)
+    // 预测fn已经被调用
+    assert(fn.called)
   })
-  it('new Promise(fn)中的fn执行的时候接收resolve和reject两个函数', () => {
-    const promise = new Promise((resolve, reject) => {
+  it('new Promise(fn)中的fn执行的时候接收resolve和reject两个函数', (done) => {
+    new Promise((resolve, reject) => {
       assert.isFunction(resolve)
       assert.isFunction(reject)
+      done()
     })
   })
   it('promise.then(onFulfilled)中的onFulfilled会在resolve被调用的时候执行', done => {
-    let called = false
+    let onFulfilled = sinon.fake()
     const promise = new Promise((resolve, reject) => {
       // onFulfilled还没有被调用
-      assert(called === false)
+      assert.isFalse(onFulfilled.called)
       resolve()
       // onFulfilled被调用了
       setTimeout(() => {
-        assert(called === true)
+        assert.isTrue(onFulfilled.called)
         done()
       })
     })
     // @ts-ignore
-    promise.then(function onFulfilled() {
-      called = true
-    })
+    promise.then(onFulfilled)
   })
 })
