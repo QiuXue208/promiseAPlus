@@ -9,7 +9,7 @@ class Promise2 {
     this.state = 'fulfilled'
     setTimeout(() => {
       if (typeof this.onFulfilled === 'function') {
-        this.onFulfilled(result)
+        this.onFulfilled.call(undefined, result)
       }
     }, 0)
   }
@@ -18,7 +18,7 @@ class Promise2 {
     this.state = 'rejected'
     setTimeout(() => {
       if (typeof this.onRejected === 'function') {
-        this.onRejected(reason)
+        this.onRejected.call(undefined ,reason)
       }
     }, 0)
   }

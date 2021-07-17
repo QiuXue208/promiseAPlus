@@ -106,4 +106,12 @@ describe("Promise", () => {
       done()
     })
   })
+  it('2.2.5', () => {
+    const promise = new Promise((resolve) => {
+      resolve(1)
+    })
+    promise.then(function() {
+      assert(this === undefined)
+    })
+  })
 })
