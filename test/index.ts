@@ -76,4 +76,19 @@ describe("Promise", () => {
     })
     promise.then(onFulfilled)
   })
+  it('2.2.3', () => {
+    let onRejected = sinon.fake()
+    const promise = new Promise((resolve, reject) => {
+      assert.isFalse(onRejected.called)
+      reject(123)
+      reject(1233)
+      setTimeout(() => {
+        assert(promise.state === 'rejected')
+        assert.isTrue(onRejected.called)
+        assert.isTrue(onRejected.calledOnce)
+        assert(onRejected.calledWith(123))
+      })
+    })
+    promise.then(null, onRejected)
+  })
 })
