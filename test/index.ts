@@ -37,4 +37,21 @@ describe("Promise", () => {
       assert.isFunction(reject)
     })
   })
+  it('promise.then(onFulfilled)中的onFulfilled会在resolve被调用的时候执行', done => {
+    let called = false
+    const promise = new Promise((resolve, reject) => {
+      // onFulfilled还没有被调用
+      assert(called === false)
+      resolve()
+      // onFulfilled被调用了
+      setTimeout(() => {
+        assert(called === true)
+        done()
+      })
+    })
+    // @ts-ignore
+    promise.then(function onFulfilled() {
+      called = true
+    })
+  })
 })
