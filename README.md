@@ -2,14 +2,17 @@
 
 ## 参考文档
 
-[PromiseA+英文文档](https://promisesaplus.com/)
-[PromiseA+中文文档](https://juejin.cn/post/6844903649852784647)
+1. [PromiseA+英文文档](https://promisesaplus.com/)
+2. [PromiseA+中文文档](https://juejin.cn/post/6844903649852784647)
 
 ## 测试方案
 
 ```
 yarn add mocha chai --dev
 yarn add @types/mocha @types/chai --dev
+
+yarn global add mocha
+mocha -r ts-node/register test/index.ts
 ```
 
 ## Promise 概览
