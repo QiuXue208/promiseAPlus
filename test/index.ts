@@ -1,12 +1,17 @@
 import * as chai from 'chai';
-
+import { type } from 'os';
+import Promise from '../src/promise';
 const assert = chai.assert;
 
 // mocha模块才有describe和it这两个方法
 // 所以需要用mocha来运行该文件
 // mocha -r ts-node/register test/index.ts
-describe("Chai的使用", () => {
-  it('测试', () => {
-    assert(1 === 1)
+describe("Promise", () => {
+  it('是一个类', () => {
+    assert(typeof Promise === 'function')
+    assert(typeof Promise.prototype === 'object')
+    // 或者
+    assert.isFunction(Promise)
+    assert.isObject(Promise.prototype)
   })
 })
