@@ -14,4 +14,9 @@ describe("Promise", () => {
     assert.isFunction(Promise)
     assert.isObject(Promise.prototype)
   })
+  it('new Promise()必须接收一个函数，否则就报错', () => {
+    assert.throw(() => {
+      new Promise(1)
+    })
+  })
 })
