@@ -3,6 +3,7 @@ class Promise2 {
     if (typeof fn !== 'function') {
       throw new Error('new Promise()必须接受一个函数')
     }
+    fn()
   }
   then() {}
 }
