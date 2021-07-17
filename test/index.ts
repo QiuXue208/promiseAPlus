@@ -114,4 +114,20 @@ describe("Promise", () => {
       assert(this === undefined)
     })
   })
+  it('2.2.6 then可以被同一个promise调用多次', () => {
+    const promise = new Promise((resolve, reject) => {
+      reject(1)
+    })
+    const callbacks = [sinon.fake(), sinon.fake(), sinon.fake()]
+    promise.then(null, callbacks[0])
+    promise.then(null, callbacks[1])
+    promise.then(null, callbacks[2])
+    setTimeout(() => {
+      assert.isTrue(callbacks[0].called)
+      assert.isTrue(callbacks[1].called)
+      assert.isTrue(callbacks[2].called)
+      assert(callbacks[1].calledAfter(callbacks[0]))
+      assert(callbacks[2].calledAfter(callbacks[1]))
+    })
+  })
 })
