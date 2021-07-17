@@ -31,4 +31,10 @@ describe("Promise", () => {
     // @ts-ignore
     assert(called === true)
   })
+  it('new Promise(fn)中的fn执行的时候接收resolve和reject两个函数', () => {
+    const promise = new Promise((resolve, reject) => {
+      assert.isFunction(resolve)
+      assert.isFunction(reject)
+    })
+  })
 })
