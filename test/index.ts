@@ -154,6 +154,6 @@ describe("Promise", () => {
     setTimeout(() => {
       assert(fn.called)
       done()
-    }, 5)
+    })
   })
 })

@@ -7,7 +7,8 @@ class Promise2 {
   resolve(result) {
     if (this.state !== 'pending') return
     this.state = 'fulfilled'
-    setTimeout(() => {
+    // 或者 process.nextTick
+    setImmediate(() => {
       this.callbacks.forEach((handler) => {
         if (typeof handler[0] === 'function') {
           const fulfilledResult = handler[0].call(undefined, result)
@@ -15,12 +16,13 @@ class Promise2 {
           handler[2].resolveWithX(fulfilledResult)
         }
       })
-    }, 0)
+    })
   }
   reject(reason) {
     if (this.state !== 'pending') return
     this.state = 'rejected'
-    setTimeout(() => {
+    // 或者 process.nextTick
+    setImmediate(() => {
       this.callbacks.forEach((handler) => {
         if (typeof handler[1] === 'function') {
           const rejectedResult = handler[1].call(undefined, reason)
@@ -28,7 +30,7 @@ class Promise2 {
           handler[2].resolveWithX(rejectedResult)
         }
       })
-    }, 0)
+    })
   }
   constructor(fn) {
     if (typeof fn !== 'function') {
