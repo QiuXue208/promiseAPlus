@@ -7,8 +7,7 @@ class Promise2 {
   resolve(result) {
     if (this.state !== 'pending') return
     this.state = 'fulfilled'
-    // 或者 process.nextTick
-    setImmediate(() => {
+    process.nextTick(() => {
       this.callbacks.forEach((handler) => {
         if (typeof handler[0] === 'function') {
           let fulfilledResult 
@@ -26,8 +25,7 @@ class Promise2 {
   reject(reason) {
     if (this.state !== 'pending') return
     this.state = 'rejected'
-    // 或者 process.nextTick
-    setImmediate(() => {
+    process.nextTick(() => {
       this.callbacks.forEach((handler) => {
         if (typeof handler[1] === 'function') {
           let rejectedResult
