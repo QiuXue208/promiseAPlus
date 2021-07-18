@@ -7,7 +7,7 @@ class Promise2 {
   resolve(result) {
     if (this.state !== 'pending') return
     this.state = 'fulfilled'
-    process.nextTick(() => {
+    nextTick(() => {
       this.callbacks.forEach((handler) => {
         if (typeof handler[0] === 'function') {
           let fulfilledResult 
@@ -25,7 +25,7 @@ class Promise2 {
   reject(reason) {
     if (this.state !== 'pending') return
     this.state = 'rejected'
-    process.nextTick(() => {
+    nextTick(() => {
       this.callbacks.forEach((handler) => {
         if (typeof handler[1] === 'function') {
           let rejectedResult
@@ -95,3 +95,21 @@ class Promise2 {
 }
 
 export default Promise2
+
+// nextTick兼容浏览器环境
+function nextTick(fn) {
+  if (process !== undefined && typeof process.nextTick === 'function') {
+    return process.nextTick(fn)
+  } else {
+    let counter = 1
+    const observer = new MutationObserver(fn)
+    const textNode = document.createTextNode(String(counter))
+
+    observer.observe(textNode, {
+      characterData: true
+    })
+
+    counter = counter + 1
+    textNode.data = String(counter)
+  }
+}
