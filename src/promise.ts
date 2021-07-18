@@ -39,7 +39,7 @@ class Promise2 {
     if (handler.length) {
       this.callbacks.push(handler)
     }
-
+    return new Promise2(() => {})
   }
 }
 

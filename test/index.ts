@@ -130,4 +130,9 @@ describe("Promise", () => {
       assert(callbacks[2].calledAfter(callbacks[1]))
     })
   })
+  it('2.2.7 then必须返回一个promise', () => {
+    const promise = new Promise(() => {})
+    const promise2 = promise.then()
+    assert(promise2 instanceof Promise)
+  })
 })
