@@ -8,8 +8,12 @@ class Promise2 {
     if (this.state !== 'pending') return
     this.state = 'fulfilled'
     setTimeout(() => {
-      this.callbacks.length && this.callbacks.forEach(([onFulfilled]) => {
-        onFulfilled.call(undefined, result)
+      this.callbacks.forEach((handler) => {
+        if (typeof handler[0] === 'function') {
+          const fulfilledResult = handler[0].call(undefined, result)
+          // 将成功的值传给下一个promise
+          handler[2].resolveWithX(fulfilledResult)
+        }
       })
     }, 0)
   }
@@ -17,8 +21,12 @@ class Promise2 {
     if (this.state !== 'pending') return
     this.state = 'rejected'
     setTimeout(() => {
-      this.callbacks.length && this.callbacks.forEach(([onFulfilled, onRejected]) => {
-        onRejected.call(undefined, reason)
+      this.callbacks.forEach((handler) => {
+        if (typeof handler[1] === 'function') {
+          const rejectedResult = handler[1].call(undefined, reason)
+          // 将失败的值传给下一个promise
+          handler[2].resolveWithX(rejectedResult)
+        }
       })
     }, 0)
   }
@@ -36,10 +44,43 @@ class Promise2 {
     if (typeof onRejected === 'function') {
       handler[1] = onRejected
     }
-    if (handler.length) {
-      this.callbacks.push(handler)
+    handler[2] = new Promise2(() => {})
+    this.callbacks.push(handler)
+    return handler[2]
+  }
+  resolveWithX(x) {
+    // this是指的调用then方法返回的promise
+    if (this === x) {
+      this.reject(new TypeError())
+    } else if (x instanceof Promise2) {
+      x.then(result => {
+        this.resolve(result)
+      }, reason => {
+        this.reject(reason)
+      })
+    } else if (x instanceof Object) {
+      let then
+      try {
+        then = x.then
+      } catch (e) {
+        this.reject(e)
+      }
+      if (then instanceof Function) {
+        try {
+          x.then((y) => {
+            this.resolveWithX(y)
+          }, (r) => {
+            this.reject(r)
+          })
+        } catch(e) {
+          this.reject(e)
+        }
+      } else {
+        this.resolve(x)
+      }
+    } else {
+      this.resolve(x)
     }
-    return new Promise2(() => {})
   }
 }
 

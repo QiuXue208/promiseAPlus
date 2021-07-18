@@ -131,8 +131,29 @@ describe("Promise", () => {
     })
   })
   it('2.2.7 then必须返回一个promise', () => {
-    const promise = new Promise(() => {})
+    const promise = new Promise((resolve) => { resolve() })
     const promise2 = promise.then()
     assert(promise2 instanceof Promise)
+  })
+  it('2.2.7.1 如果then(onFulfilled, onRejected)中的onFulfilled返回一个值x, 就执行[[Resolve]](promise2, x)', () => {
+    const promise = new Promise((resolve) => { resolve() })
+    promise.then(() => '成功', () => {}).then((result) => {
+      assert(result ==='成功')
+    })
+  })
+  it('2.2.7.1.2 如果then(onFulfilled, onRejected)中的onFulfilled返回一个值x, x是一个promise', (done) => {
+    const promise = new Promise((resolve) => { resolve() })
+    const fn = sinon.fake()
+    promise
+      .then(() => '成功', () => {})
+      .then((result) => {
+        assert(result === '成功')
+        return new Promise((resolve) => resolve(123))
+      })
+      .then(fn)
+    setTimeout(() => {
+      assert(fn.called)
+      done()
+    }, 5)
   })
 })
