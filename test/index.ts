@@ -150,10 +150,37 @@ describe("Promise", () => {
         assert(result === '成功')
         return new Promise((resolve) => resolve(123))
       })
-      .then(fn)
+      .then(() => {
+        return new Promise((resolve, reject) => reject(123))
+      }).then(null, fn)
     setTimeout(() => {
       assert(fn.called)
       done()
     })
+  })
+  it('2.2.7.1.3 如果then(onFulfilled, onRejected)onRejected, x是一个promise, 且失败了', (done) => {
+    const promise = new Promise((resolve, reject) => { resolve() })
+    const fn = sinon.fake()
+    promise
+      .then(() => new Promise((resolve, reject) => reject(123)))
+      .then(null, fn)
+    setTimeout(() => {
+      assert(fn.called)
+      done()
+    })
+  })
+  it('2.2.7.2', () => {
+    const promise = new Promise((resolve, reject) => { resolve() })
+    let fn = sinon.fake()
+    let error = new Error()
+    promise.then(
+      () => {
+        throw error
+      }
+    ).then(null, fn)
+    // setTimeout(() => {
+    //   assert(fn.called)
+    //   assert(fn.calledWith(error))
+    // })
   })
 })

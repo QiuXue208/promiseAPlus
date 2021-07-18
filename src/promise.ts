@@ -11,7 +11,12 @@ class Promise2 {
     setImmediate(() => {
       this.callbacks.forEach((handler) => {
         if (typeof handler[0] === 'function') {
-          const fulfilledResult = handler[0].call(undefined, result)
+          let fulfilledResult 
+          try {
+            fulfilledResult = handler[0].call(undefined, result)
+          } catch(e) {
+            return handler[2].reject(e)
+          }
           // 将成功的值传给下一个promise
           handler[2].resolveWithX(fulfilledResult)
         }
@@ -25,7 +30,12 @@ class Promise2 {
     setImmediate(() => {
       this.callbacks.forEach((handler) => {
         if (typeof handler[1] === 'function') {
-          const rejectedResult = handler[1].call(undefined, reason)
+          let rejectedResult
+          try {
+            rejectedResult = handler[1].call(undefined, reason)
+          } catch(e) {
+            return handler[2].reject(e)
+          }
           // 将失败的值传给下一个promise
           handler[2].resolveWithX(rejectedResult)
         }
@@ -65,7 +75,7 @@ class Promise2 {
       try {
         then = x.then
       } catch (e) {
-        this.reject(e)
+        return this.reject(e)
       }
       if (then instanceof Function) {
         try {
